@@ -1,0 +1,525 @@
+SavePLayerjsp
+
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+<style type="text/css">
+body{
+  background-image:url("https://tse2.mm.bing.net/th?id=OIP.M-hxaFTsguPamQNLpY205wHaDD&pid=Api&P=0&w=451&h=187") ;
+  background-size: cover;
+}
+</style>
+
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">PLAYER </a>
+    </div>
+    <ul class="nav navbar-nav">
+     
+      <li class="active"><a href="#"> save</a></li>
+      <li><a href="Search.jsp"> search</a></li>
+      <li ><a href="DeletePlayer.jsp"> delete</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  
+  <form action="PLayerServlet">
+    <div class="form-group">
+      <label for="Name">Name:</label>
+      <input type="text" class="form-control" id="Name" placeholder="Enter name" name="name">
+    </div>
+    
+    <div class="form-group">
+      <label for="role">Role:</label>
+      <input type="text" class="form-control" id="role" placeholder="Enter role" name="role">
+    </div>
+
+
+   <div class="form-group">
+      <label for="style">Style:</label>
+      <input type="text" class="form-control" id="style" placeholder="Enter style" name="style">
+    </div>
+    
+    
+    <div class="form-group">
+      <label for="team">Team:</label>
+      <input type="text" class="form-control" id="team" placeholder="Enter team" name="team">
+    </div>    
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+</body>
+</html>
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+SavePLayerServlet
+
+
+package PServlet;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.myproj.dao.Player_dao;
+import com.myproj.model.Player_model;
+
+
+@WebServlet("/PLayerServlet")
+public class PLayerServlet extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
+		public PLayerServlet() {
+        super();
+}
+ protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		doGet(request, response);
+	}
+	
+ protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+		String Name=request.getParameter("name");
+        String role=request.getParameter("role");
+        String style=request.getParameter("style");
+		String team=request.getParameter("team");
+
+        Player_model player=new Player_model(Name,role,style,team);
+        Player_dao dao=new Player_dao();
+
+        PrintWriter out=response.getWriter();
+		response.setContentType("text/html");
+		out.print(dao.savePlayer(player));
+       }
+}
+
+	
+
+
+----------------------------------------------------------------------------------------
+
+SearchPLayerJsp
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+pageEncoding="ISO-8859-1"%>
+<%@page import="com.myproj.model.Player_model"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.myproj.dao.Player_dao"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+
+<style type="text/css">
+body{
+  background-image:url("https://tse2.mm.bing.net/th?id=OIP.M-hxaFTsguPamQNLpY205wHaDD&pid=Api&P=0&w=451&h=187") ;
+  background-size: cover;
+}
+</style>
+
+
+
+
+
+
+
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">PLAYER</a>
+    </div>
+    <ul class="nav navbar-nav">
+     
+      <li><a href="Player1.jsp"> save</a></li>
+      <li class="active"><a href="#"> search</a></li>
+      <li><a href="DeletePlayer.jsp"> delete</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+<form action="SearchServlet">
+    <div class="form-group">
+      <label for="Name">Name:</label>
+      <input type="text" class="form-control" id="Name" placeholder="Enter name" name="Name" 
+      >
+    </div>
+    
+     <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<div class="container">
+  
+         
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Style</th>
+        <th>Team</th>
+      </tr>
+    </thead>
+    <tbody>
+     
+     
+     <%
+Player_dao dao=new Player_dao();
+ArrayList<Player_model> players= dao.getPlayers();
+
+for(Player_model player:players)
+{
+out.print("<tr>");
+
+out.print("<td> "+ player.getName()+" </td>");
+out.print("<td> "+ player.getRole()+" </td>");
+out.print("<td> "+player.getStyle()+" </td>");
+out.print("<td> "+ player.getTeam()+" </td>");
+out.print("</tr>");
+
+}
+
+%>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
+
+----------------------------------------------------------------------------------------
+SearchPlayerServlet
+
+package Searchservlet;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.catalina.servlet4preview.RequestDispatcher;
+
+import com.myproj.dao.Player_dao;
+import com.myproj.model.Player_model;
+
+@WebServlet("/SearchServlet")
+public class SearchServlet extends HttpServlet {  
+    public SearchServlet() {
+        super();
+    }
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String Name=request.getParameter("Name");
+
+		Player_dao dao=new Player_dao();
+		Player_model player= dao.getPlayerByName(Name);
+
+		PrintWriter out=response.getWriter();
+		response.setContentType("text/html");
+
+        HttpSession session= request.getSession();
+		session.setAttribute("player",player);
+
+		javax.servlet.RequestDispatcher rd= request.getRequestDispatcher("Display.jsp");
+		rd.forward(request, response);
+
+		}
+}
+
+
+
+----------------------------------------------------------------------------------------
+DeletePLayerJsp
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+<style type="text/css">
+body{
+  background-image:url("https://tse2.mm.bing.net/th?id=OIP.M-hxaFTsguPamQNLpY205wHaDD&pid=Api&P=0&w=451&h=187") ;
+  background-size: cover;
+}
+</style>
+
+
+
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">PLAYER</a>
+    </div>
+    <ul class="nav navbar-nav">
+     
+      <li><a href="Player1.jsp"> save</a></li>
+      <li><a href="Search.jsp"> search</a></li>
+      <li class="active"><a href="#"> delete</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+<form action="DeletePlayerServlet">
+    <div class="form-group">
+      <label for="Name">Name:</label>
+      <input type="text" class="form-control" id="Name" placeholder="Enter name" name="Name" 
+      >
+    </div>
+    
+     <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+
+
+</body>
+</html>
+----------------------------------------------------------------------------------------
+DeletePLayerServlet
+
+
+package DeletePlayer;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.myproj.dao.Player_dao;
+import com.myproj.model.Player_model;
+
+/**
+ * Servlet implementation class DeletePlayerServlet
+ */
+@WebServlet("/DeletePlayerServlet")
+public class DeletePlayerServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    public DeletePlayerServlet() {
+        super();
+        
+    }
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String Name=request.getParameter("Name");
+
+
+		Player_dao dao=new Player_dao();
+		//Player_model msg= dao.getPlayerByName(Name);
+		String msg1= dao.deleteStudentById(Name);
+
+
+		PrintWriter out=response.getWriter();
+		response.setContentType("text/html");
+		out.print(msg1);
+
+		}
+}
+
+
+----------------------------------------------------------------------------------------UpdatePLayerServlet
+
+
+package Update_servlet;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.myproj.dao.Player_dao;
+import com.myproj.model.Player_model;
+
+/**
+ * Servlet implementation class UpdateServlet
+ */
+@WebServlet("/UpdateServlet")
+public class UpdateServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+   
+    public UpdateServlet() {
+        super();
+    }
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Player_model player=(Player_model)request.getSession().getAttribute("player");
+        String Name= player.getName();
+		 
+		String role= request.getParameter("role");
+		String style= request.getParameter("style");
+		String team=request.getParameter("team");
+		
+		Player_model updateplayer =new Player_model(Name, role, style, team);
+
+		Player_dao dao=new Player_dao();
+		response.getWriter().print(dao.updatePlayer(updateplayer));
+		
+}
+
+	
+}
+
+----------------------------------------------------------------------------------------
+
+DisplayJSP
+
+<%@page import="com.myproj.model.Player_model"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    
+<!DOCTYPE html>
+<html>
+<head>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+<style type="text/css">
+
+
+body{
+  background-image:url("https://tse2.mm.bing.net/th?id=OIP.M-hxaFTsguPamQNLpY205wHaDD&pid=Api&P=0&w=451&h=187") ;
+  background-size: cover;
+}
+
+
+
+td{
+text-align: center;
+width: 120px;
+}
+
+
+
+
+
+
+
+</style>
+
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">PLAYER</a>
+    </div>
+    <ul class="nav navbar-nav">
+     
+      <li><a href="Player1.jsp"> save</a></li>
+      <li class="active"><a href="#"> search</a></li>
+      <li><a href="DeletePlayer.jsp"> delete</a></li>
+    </ul>
+  </div>
+</nav>
+
+<form action="UpdateServlet">
+<h1>
+Player Details
+</h1>
+
+
+<table >
+
+<%! Player_model player; %>
+<%player=(Player_model)session.getAttribute("player"); %>
+<tr> <td>Name:</td> <td> <% out.print(player.getName()); %> </td> </tr>
+<tr> <td>role:</td> <td> <% out.print("<input type='text' name='role' value='"+ player.getRole()+"'>"); %> </td> </tr>
+<tr> <td>style:</td> <td> <% out.print("<input type='text' name='style' value='"+ player.getStyle()+"'>"); %> </td> </tr>
+<tr> <td>team:</td> <td> <% out.print("<input type='text' name='team' value='"+ player.getTeam()+"'>"); %> </td> </tr>
+
+</table>
+
+<input type="submit">
+</form>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
